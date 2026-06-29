@@ -1,27 +1,27 @@
 // ============================================
 // TW Fantasy Official League
 // Firebase Configuration — Central Config File
-// ⚠️ ဒီ file တစ်ခုထဲမှာ မင်းရဲ့ Keys ထည့်ပါ
+// ✨ NEW FIREBASE PROJECT 2027 KEYS (UPDATED)
 // ============================================
 
+// 🌟 CDN Links များကို အန်ကယ့် Project မူရင်းအတိုင်း သုံးထားပါတယ်ဗျာ
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ⚠️ မင်းရဲ့ Firebase Keys ဒီနေရာမှာ ထည့်ပါ
+// ⚠️ အန်ကယ့်ရဲ့ Firebase အသစ်စက်စစ် Keys များ ဖြစ်ပါတယ်ဗျာ
 const firebaseConfig = {
-  apiKey: "AIzaSyAqRX8hRprmH233Tj8hTdd_K85ABVr-rko",
-  authDomain: "tw-fpl-26-27.firebaseapp.com",
-  projectId: "tw-fpl-26-27",
-  storageBucket: "tw-fpl-26-27.firebasestorage.app",
-  messagingSenderId: "257650730355",
-  appId: "1:257650730355:web:f72c5dcdf8332367435106"
+  apiKey: "AIzaSyD9seAqGe8PPkazn_f_hFEfY7JvIz3LHxo",
+  authDomain: "tw-fantasy-2027.firebaseapp.com",
+  projectId: "tw-fantasy-2027",
+  storageBucket: "tw-fantasy-2027.firebasestorage.app",
+  messagingSenderId: "625324670124",
+  appId: "1:625324670124:web:0a270e40d916655ae8f309"
 };
 
 // Firebase Initialize
 const app = initializeApp(firebaseConfig);
 
-// Export — files တွေကနေ import လုပ်သုံးရမည်
+// Export — အခြား .js ဖိုင်များမှ လှမ်းယူသုံးစွဲနိုင်ရန်
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
