@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1B4D2E" />
+  <title>Leagues — TW Fantasy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  
+  <style>
+    #team-popup-modal.hidden { display: none !important; }
+    * { -webkit-tap-highlight-color: transparent; }
+    
+    /* 💡 🎯 🚀 CRITICAL MOBILE SELECT BLOCK ENGINE */
+    /* စာမျက်နှာတစ်ခုလုံးရှိ မည်သည့်စာသား၊ ခလုတ်၊ စာရင်းဇယားနှင့် Popup အတွင်းရှိ ဂျာစီများကိုမဆို ဖိမိပါက Google Translate / Search Bar များ လုံးဝမတက်စေရန် ပိတ်ဆို့ခြင်း */
+    body { 
+      font-family: "Inter", sans-serif; 
+      background: #0D2B1A; 
+      height: 100vh; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+      -webkit-user-select: none;  /* iOS & Android Chrome select ပိတ်ဆို့ခြင်း */
+      -moz-user-select: none;     /* Firefox browser selection ပိတ်ဆို့ခြင်း */
+      -ms-user-select: none;      /* IE select ပိတ်ဆို့ခြင်း */
+      user-select: none;          /* စာသားတစ်ခုလုံးအား ဖိနှိပ်မှုမှ ရာနှုန်းပြည့် ကာကွယ်ခြင်း */
+    }
+    
+    .gold-text { background: linear-gradient(135deg, #C9A84C, #F0D060, #A07830); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 12px; color:#3A9E5F; cursor:pointer; }
+    .nav-item.active { color:#C9A84C; }
+    
+    .player-point-circle { width:22px; height:22px; background:black; color:white; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:900; margin-top:-8px; z-index:10; border:1px solid rgba(255,255,255,0.2); box-shadow:0 2px 4px rgba(0,0,0,0.4); }
+    
+    #league-scroll-container::-webkit-scrollbar { width: 3px; }
+    #league-scroll-container::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 2px; }
+  </style>
+
+  <script type="module" src="/twfpl26-27/js/leagues.js"></script>
+</head>
+<body>
+
+  <div style="background:#0D2B1A; border-bottom:1px solid #1F5C36; padding:12px 16px; display:flex; align-items:center; flex-shrink:0;">
+    <a href="/twfpl26-27/pages/dashboard.html" style="color:#3A9E5F; font-size:1.2rem; margin-right:8px; font-weight:bold;">←</a>
+    <h1 class="gold-text font-bold" style="font-family:'Bebas Neue'; letter-spacing:0.1em; font-size:1.3rem;">LEAGUES</h1>
+  </div>
+
+  <div style="padding:12px 16px 6px; flex-shrink:0;">
+    <div class="grid grid-cols-2 gap-2 w-full">
+      <button id="tab-league1" onclick="window.switchTab('league1')" class="rounded-xl py-2.5 text-xs font-bold tracking-wide transition" style="background: linear-gradient(135deg,#C9A84C,#F0D060); color:#0D2B1A;">Weekly League</button>
+      <button id="tab-league2" onclick="window.switchTab('league2')" class="rounded-xl py-2.5 text-xs font-bold tracking-wide transition" style="border:1px solid #2A7A47; color:#3A9E5F; background:transparent;">All Friends</button>
+    </div>
+  </div>
+
+  <div style="padding:6px 16px 10px; flex-shrink:0; border-bottom:1px solid #1F5C36;" class="flex flex-col gap-2">
+    <div class="flex items-center gap-1.5 flex-wrap">
+      <span class="text-[10px] font-black tracking-wider uppercase mr-1" style="color:#3A9E5F;">CHIPS:</span>
+      <span class="text-[9px] font-black px-2 py-0.5 rounded border border-[#C9A84C]/40 bg-[#C9A84C]/10 text-[#F0D060] shadow-sm">TC</span>
+      <span class="text-[9px] font-black px-2 py-0.5 rounded border border-[#C9A84C]/40 bg-[#C9A84C]/10 text-[#F0D060] shadow-sm">BB</span>
+      <span class="text-[9px] font-black px-2 py-0.5 rounded border border-[#C9A84C]/40 bg-[#C9A84C]/10 text-[#F0D060] shadow-sm">WC</span>
+      <span class="text-[9px] font-black px-2 py-0.5 rounded border border-[#C9A84C]/40 bg-[#C9A84C]/10 text-[#F0D060] shadow-sm">FH</span>
+    </div>
+
+    <div class="flex items-center justify-between w-full mt-0.5">
+      <p class="text-[10px] font-medium text-white/70">
+        <span class="text-[#f87171] font-black font-mono">(-4)</span> = ဒီ GW တွင် ယူထားသည့် Hit Point
+      </p>
+      <div class="flex gap-1.5">
+        <button id="sort-total" onclick="window.switchSort('total')" class="text-[10px] font-bold px-2.5 py-1 rounded-full border transition" style="background:rgba(201,168,76,0.25); color:#C9A84C; border-color:#C9A84C;">Total</button>
+        <button id="sort-gw" onclick="window.switchSort('gw')" class="text-[10px] font-bold px-2.5 py-1 rounded-full border transition" style="background:transparent; color:#3A9E5F; border-color:#2A7A47;">This GW</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="league-scroll-container" style="flex:1; overflow-y:auto;" class="px-4 py-3">
+    <div id="panel-league1" style="display:block;">
+      <div id="league1-table"></div>
+    </div>
+    <div id="panel-league2" style="display:none;">
+      <div id="league2-table"></div>
+    </div>
+  </div>
+
+  <div style="background:#0D2B1A; border-top:1px solid #1F5C36; display:flex; justify-content:space-around; align-items:center; padding:4px 0; flex-shrink:0;">
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/dashboard.html'"><span style="font-size:1.3rem;">🏠</span><span style="font-size:0.6rem;">Home</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/live.html'"><span style="font-size:1.3rem;">⚡</span><span style="font-size:0.6rem;">Live</span></div>
+    <div class="nav-item active"><span style="font-size:1.3rem;">🏆</span><span style="font-size:0.6rem;">League</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/fixtures.html'"><span style="font-size:1.3rem;">⚽</span><span style="font-size:0.6rem;">Fixtures</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/scout.html'"><span style="font-size:1.3rem;">🔍</span><span style="font-size:0.6rem;">Scout</span></div>
+  </div>
+
+  <div id="team-popup-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:100; display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(3px);" onclick="if(event.target===this)window.closeTeamPopup()">
+    <div style="background:linear-gradient(145deg,#1F5C36,#0D2B1A); border:1px solid rgba(201,168,76,0.4); border-radius:1.25rem; width:100%; max-width:350px; padding:14px; box-shadow:0 0 30px rgba(0,0,0,0.6);" class="flex flex-col relative">
+      
+      <div class="flex justify-between items-center mb-2 pb-1.5" style="border-bottom:1px solid rgba(42,122,71,0.5);">
+        <h3 id="modal-team-title" class="text-white font-black text-sm truncate tracking-wide" style="max-width:240px; font-family:'Bebas Neue'; font-size:1.25rem; color:#F0D060;">—</h3>
+        <button onclick="window.closeTeamPopup()" style="color:#E8D5A3; font-size:1rem; font-weight:bold; background:rgba(255,255,255,0.1); width:24px; height:24px; border-radius:9999px; display:flex; align-items:center; justify-content:center;">✕</button>
+      </div>
+
+      <div class="grid grid-cols-4 gap-1.5 text-center mb-3">
+        <div class="rounded-lg p-1 bg-black/30 border border-[#2A7A47]">
+          <p class="text-[8px]" style="color:#3A9E5F;">Hit Cost</p>
+          <p id="modal-hit-cost" class="text-[11px] font-bold text-red-400 font-mono">0</p>
+        </div>
+        <div class="rounded-lg p-1 bg-black/30 border border-[#2A7A47]">
+          <p class="text-[8px]" style="color:#3A9E5F;">GW Points</p>
+          <p id="modal-gw-pts" class="text-[11px] font-black text-white">0</p>
+        </div>
+        <div class="rounded-lg p-1 bg-black/30 border border-[#2A7A47]">
+          <p class="text-[8px]" style="color:#3A9E5F;">Total Points</p>
+          <p id="modal-total-pts" class="text-[11px] font-black text-[#C9A84C]">0</p>
+        </div>
+        <div class="rounded-lg p-1 bg-black/30 border border-[#2A7A47]">
+          <p class="text-[8px]" style="color:#3A9E5F;">Active Chip</p>
+          <p id="modal-chip-badge" class="text-[9px] font-black text-[#F0D060]">NO CHIP</p>
+        </div>
+      </div>
+
+      <div style="background:#154726; border:2px solid rgba(255,255,255,0.4); border-radius:12px; padding:10px 6px; position:relative; min-height:278px; background-image: radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 50%, transparent 50%); background-size: 20px 20px, 100% 40px;" class="shadow-inner overflow-hidden">
+        
+        <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:160px; height:38px; border:1px solid rgba(255,255,255,0.3); border-top:none; pointer-events:none;"></div>
+        <div style="position:absolute; top:0; left:50%; transform:translateX(-50%); width:80px; height:14px; border:1px solid rgba(255,255,255,0.2); border-top:none; pointer-events:none;"></div>
+
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:68px; height:68px; border:1px solid rgba(255,255,255,0.3); border-radius:9999px; pointer-events:none;"></div>
+        <div style="position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(255,255,255,0.3); pointer-events:none;"></div>
+        
+        <div style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:160px; height:38px; border:1px solid rgba(255,255,255,0.3); border-bottom:none; pointer-events:none;"></div>
+        <div style="position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:80px; height:14px; border:1px solid rgba(255,255,255,0.2); border-bottom:none; pointer-events:none;"></div>
+
+        <div id="popup-pitch-rows" class="h-full relative z-10"></div>
+      </div>
+
+      <div class="mt-3 p-2 rounded-xl bg-black/20 border border-white/5">
+        <p class="text-[9px] font-black tracking-widest text-center uppercase mb-2" style="color:#C9A84C; font-size:0.6rem;">BENCH (အရန်လူစာရင်း)</p>
+        <div id="popup-bench-row" class="flex justify-around items-center gap-1 w-full"></div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

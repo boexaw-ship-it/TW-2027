@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1B4D2E" />
+  <title>Match Center — TW Fantasy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  
+  <style>
+    * { 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    
+    /* 💡 🎯 🚀 CRITICAL MOBILE SELECT BLOCK ENGINE */
+    /* စာမျက်နှာတစ်ခုလုံးရှိ မည်သည့်စာသား၊ ခလုတ်နှင့် ပွဲစဉ်ဇယားကတ်ပြားကိုမဆို ဖိမိပါက Google Translate / Search Bar များ လုံးဝမတက်စေရန် ပိတ်ဆို့ခြင်း */
+    body { 
+      font-family: "Inter", sans-serif; 
+      background: #0D2B1A; 
+      height: 100vh; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+      -webkit-user-select: none;  /* iOS & Android Chrome select ပိတ်ဆို့ခြင်း */
+      -moz-user-select: none;     /* Firefox browser selection ပိတ်ဆို့ခြင်း */
+      -ms-user-select: none;      /* IE select ပိတ်ဆို့ခြင်း */
+      user-select: none;          /* စာသားတစ်ခုလုံးအား ဖိနှိပ်မှုမှ ရာနှုန်းပြည့် ကာကွယ်ခြင်း */
+    }
+    
+    .gold-text { background: linear-gradient(135deg, #C9A84C, #F0D060, #A07830); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 12px; color:#3A9E5F; cursor:pointer; }
+    .nav-item.active { color:#C9A84C; }
+    .tab-btn { flex:1; padding:12px 0; font-size:0.8rem; font-weight:700; border-bottom:2px solid transparent; background:transparent; cursor:pointer; transition: all 0.2s; }
+    
+    /* Custom Scrollbar Styling */
+    #fixtures-scroll-container::-webkit-scrollbar { width: 3px; }
+    #fixtures-scroll-container::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 2px; }
+    
+    /* Stats Box Dropdown Animation */
+    .stats-expand-box { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .stats-expand-box.open { max-height: 500px; transition: max-height 0.4s ease-in; }
+  </style>
+
+  <script type="module" src="/twfpl26-27/js/weekfixtures.js"></script>
+</head>
+<body>
+
+  <div style="background:#0D2B1A; border-bottom:1px solid #1F5C36; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+    <div class="flex items-center gap-2">
+      <a href="/twfpl26-27/pages/dashboard.html" style="color:#3A9E5F; font-size:1.2rem; font-weight:bold;">←</a>
+      <h1 class="gold-text font-bold" style="font-family:'Bebas Neue'; letter-spacing:0.1em; font-size:1.3rem;">MATCH CENTER</h1>
+    </div>
+    
+    <div id="gw-selector-container"></div>
+  </div>
+
+  <div style="display:flex; border-bottom:1px solid #1F5C36; flex-shrink:0; background:#0B2315;">
+    <button id="tab-all" class="tab-btn" onclick="window.filterFixtures('all')" style="border-color:#C9A84C; color:#C9A84C;">All Matches</button>
+    <button id="tab-upcoming" class="tab-btn" onclick="window.filterFixtures('upcoming')" style="color:#3A9E5F;">Upcoming</button>
+    <button id="tab-finished" class="tab-btn" onclick="window.filterFixtures('finished')" style="color:#3A9E5F;">Results</button>
+  </div>
+
+  <div id="fixtures-scroll-container" style="flex:1; overflow-y:auto;" class="px-4 py-4">
+    <div id="fixtures-list">
+      <div class="flex flex-col items-center justify-center py-24 gap-2">
+        <span class="text-xl animate-spin">⚽</span>
+        <span class="text-xs font-medium" style="color:#3A9E5F;">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#0D2B1A; border-top:1px solid #1F5C36; display:flex; justify-content:space-around; align-items:center; padding:4px 0; flex-shrink:0;">
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/dashboard.html'"><span style="font-size:1.3rem;">🏠</span><span style="font-size:0.6rem;">Home</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/live.html'"><span style="font-size:1.3rem;">⚡</span><span style="font-size:0.6rem;">Live</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/leagues.html'"><span style="font-size:1.3rem;">🏆</span><span style="font-size:0.6rem;">League</span></div>
+    <div class="nav-item active"><span style="font-size:1.3rem;">⚽</span><span style="font-size:0.6rem;">Fixtures</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/scout.html'"><span style="font-size:1.3rem;">🔍</span><span style="font-size:0.6rem;">Scout</span></div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1B4D2E" />
+  <title>Player Scout — TW Fantasy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  
+  <style>
+    #player-modal.hidden { display: none !important; }
+    * { 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    
+    /* 💡 🎯 🚀 CRITICAL MOBILE SELECT BLOCK ENGINE */
+    /* စာမျက်နှာတစ်ခုလုံးရှိ မည်သည့်စာသား၊ ခလုတ်နှင့် ကစားသမားကတ်ပြားကိုမဆို ဖိမိပါက Google Translate / Search Bar များ လုံးဝမတက်စေရန် ပိတ်ဆို့ခြင်း */
+    body { 
+      font-family: "Inter", sans-serif; 
+      background: #0D2B1A; 
+      height: 100vh; 
+      overflow: hidden; 
+      display: flex; 
+      flex-direction: column; 
+      -webkit-user-select: none;  /* iOS & Android Chrome select ပိတ်ဆို့ခြင်း */
+      -moz-user-select: none;     /* Firefox browser selection ပိတ်ဆို့ခြင်း */
+      -ms-user-select: none;      /* IE select ပိတ်ဆို့ခြင်း */
+      user-select: none;          /* စာသားတစ်ခုလုံးအား ဖိနှိပ်မှုမှ ရာနှုန်းပြည့် ကာကွယ်ခြင်း */
+    }
+    
+    .gold-text { background: linear-gradient(135deg, #C9A84C, #F0D060, #A07830); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 12px; color:#3A9E5F; cursor:pointer; }
+    .nav-item.active { color:#C9A84C; }
+    
+    /* Filter ခလုတ်များကို မျက်နှာပြင်အပြည့် ကွက်တိသွားစေရန် Layout ပုံစံသစ် */
+    .filter-btn { border:1px solid rgba(201,168,76,0.3); color:#E8D5A3; border-radius:0.5rem; padding:6px 0; font-size:0.75rem; font-weight:700; cursor:pointer; background:transparent; transition:all 0.2s; text-align:center; width: 100%; }
+    .sort-btn { border:1px solid #2A7A47; color:#3A9E5F; border-radius:9999px; padding:6px 0; font-size:0.7rem; font-weight:700; cursor:pointer; background:transparent; transition:all 0.2s; text-align:center; width: 100%; }
+    
+    #scout-scroll-container::-webkit-scrollbar { width: 3px; }
+    #scout-scroll-container::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 2px; }
+  </style>
+
+  <script type="module" src="/twfpl26-27/js/scout.js"></script>
+</head>
+<body>
+
+  <div style="background:#0D2B1A;border-bottom:1px solid #1F5C36;padding:12px 16px;display:flex;align-items:center;flex-shrink:0;">
+    <a href="/twfpl26-27/pages/dashboard.html" style="color:#3A9E5F;font-size:1.2rem;margin-right:8px;font-weight:bold;">←</a>
+    <h1 class="gold-text font-bold" style="font-family:'Bebas Neue';letter-spacing:0.1em;font-size:1.3rem;">PLAYER SCOUT</h1>
+  </div>
+
+  <div style="padding:12px 16px 6px;flex-shrink:0;">
+    <div class="grid grid-cols-5 gap-1.5 w-full">
+      <button id="filter-all" class="filter-btn" onclick="window.filterPos('all')" style="background:rgba(201,168,76,0.25); border-color:#C9A84C;">ALL</button>
+      <button id="filter-gk" class="filter-btn" onclick="window.filterPos('gk')">GK</button>
+      <button id="filter-def" class="filter-btn" onclick="window.filterPos('def')">DEF</button>
+      <button id="filter-mid" class="filter-btn" onclick="window.filterPos('mid')">MID</button>
+      <button id="filter-fwd" class="filter-btn" onclick="window.filterPos('fwd')">FWD</button>
+    </div>
+  </div>
+
+  <div style="padding:6px 16px 12px;flex-shrink:0;border-bottom:1px solid #1F5C36;">
+    <p class="text-xs mb-1.5" style="color:#3A9E5F;">Sort by (နှိပ်မှ active ဖြစ်ပါမည်):</p>
+    <div class="grid grid-cols-4 gap-1.5 w-full">
+      <button id="sort-price" class="sort-btn" onclick="window.toggleSort('price')">💰 Price</button>
+      <button id="sort-ownership" class="sort-btn" onclick="window.toggleSort('ownership')">👥 Owner</button>
+      <button id="sort-points" class="sort-btn" onclick="window.toggleSort('points')">⭐ Points</button>
+      <button id="sort-form" class="sort-btn" onclick="window.toggleSort('form')">📈 Form</button>
+    </div>
+  </div>
+
+  <div id="scout-scroll-container" style="flex:1;overflow-y:auto;" class="px-4 py-3">
+    <div id="player-list">
+      <p class="text-center text-xs py-8" style="color:#3A9E5F;">Loading players database...</p>
+    </div>
+  </div>
+
+  <div style="background:#0D2B1A;border-top:1px solid #1F5C36;display:flex;justify-content:space-around;align-items:center;padding:4px 0;flex-shrink:0;">
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/dashboard.html'"><span style="font-size:1.3rem;">🏠</span><span style="font-size:0.6rem;">Home</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/live.html'"><span style="font-size:1.3rem;">⚡</span><span style="font-size:0.6rem;">Live</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/leagues.html'"><span style="font-size:1.3rem;">🏆</span><span style="font-size:0.6rem;">League</span></div>
+    <div class="nav-item" onclick="window.location.href='/twfpl26-27/pages/fixtures.html'"><span style="font-size:1.3rem;">⚽</span><span style="font-size:0.6rem;">Fixtures</span></div>
+    <div class="nav-item active"><span style="font-size:1.3rem;">🔍</span><span style="font-size:0.6rem;">Scout</span></div>
+  </div>
+
+  <div id="player-modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:100;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);" onclick="if(event.target===this)window.closeModal()">
+    <div style="background:linear-gradient(145deg,#1F5C36,#0D2B1A);border:1px solid rgba(201,168,76,0.4);border-radius:1.25rem;width:100%;max-width:360px;max-height:82vh;overflow-y:auto;box-shadow:0 0 40px rgba(0,0,0,0.7);">
+      <div style="padding:16px;display:flex;justify-content:flex-end;">
+        <button onclick="window.closeModal()" style="color:#E8D5A3;font-size:1.1rem;background:rgba(255,255,255,0.1);width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;justify-content:center;font-weight:bold;">✕</button>
+      </div>
+      <div style="padding:8px 20px 16px;text-align:center;">
+        <h2 id="modal-name" class="text-white font-bold text-xl mt-2" style="font-family:'Bebas Neue';letter-spacing:0.05em;">—</h2>
+        <p id="modal-team" class="text-sm font-semibold" style="color:#C9A84C;"></p>
+        <span id="modal-position" class="inline-block mt-2 text-[10px] px-3 py-0.5 rounded-full font-black uppercase" style="color:white;">—</span>
+      </div>
+      <div class="grid grid-cols-4 gap-2 px-5 mb-5">
+        <div class="rounded-xl p-2 text-center" style="background:#162F20;border:1px solid #2A7A47;">
+          <p style="font-size:0.55rem;color:#3A9E5F;font-weight:600;">Price</p>
+          <p id="modal-price" class="font-bold text-white" style="font-family:'Bebas Neue';font-size:0.95rem;">—</p>
+        </div>
+        <div class="rounded-xl p-2 text-center" style="background:#162F20;border:1px solid #2A7A47;">
+          <p style="font-size:0.55rem;color:#3A9E5F;font-weight:600;">Owned</p>
+          <p id="modal-ownership" class="font-bold text-white" style="font-family:'Bebas Neue';font-size:0.95rem;">—</p>
+        </div>
+        <div class="rounded-xl p-2 text-center" style="background:#162F20;border:1px solid #2A7A47;">
+          <p style="font-size:0.55rem;color:#3A9E5F;font-weight:600;">Points</p>
+          <p id="modal-points" class="font-bold" style="color:#C9A84C;font-family:'Bebas Neue';font-size:0.95rem;">—</p>
+        </div>
+        <div class="rounded-xl p-2 text-center" style="background:#162F20;border:1px solid #2A7A47;">
+          <p style="font-size:0.55rem;color:#3A9E5F;font-weight:600;">Form</p>
+          <p id="modal-form" class="font-bold text-white" style="font-family:'Bebas Neue';font-size:0.95rem;">—</p>
+        </div>
+      </div>
+      <div style="padding:0 20px 24px;">
+        <p class="text-xs uppercase tracking-widest mb-2.5 font-black text-center" style="color:#C9A84C;font-size:0.65rem;">Next 3 Matches</p>
+        <div id="modal-fixtures"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
